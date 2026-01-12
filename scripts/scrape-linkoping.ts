@@ -1,7 +1,9 @@
 import { PrismaClient } from "@prisma/client";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import * as cheerio from "cheerio";
 import { z } from "zod";
+
+// Initialize Prisma
+const prisma = new PrismaClient();
 
 // Types for scraped data
 const EventSchema = z.object({
@@ -15,10 +17,6 @@ const EventSchema = z.object({
 });
 
 type ScrapedEvent = z.infer<typeof EventSchema>;
-
-// Initialize Prisma with adapter
-const adapter = new PrismaBetterSqlite3({ url: "file:./prisma/dev.db" });
-const prisma = new PrismaClient({ adapter });
 
 // Known venues in Linköping
 const venueMap: Record<string, string> = {
