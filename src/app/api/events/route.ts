@@ -20,57 +20,69 @@ const querySchema = z.object({
 });
 
 export async function GET(req: Request) {
-  const url = new URL(req.url);
-  const parsed = querySchema.safeParse(Object.fromEntries(url.searchParams.entries()));
+  try {
+    const url = new URL(req.url);
+    const parsed = querySchema.safeParse(Object.fromEntries(url.searchParams.entries()));
 
-  if (!parsed.success) {
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Invalid query", issues: parsed.error.issues },
+        { status: 400 }
+      );
+    }
+
+    const now = new Date();
+    const defaultTo = new Date(now.getTime() + 72 * 60 * 60 * 1000);
+
+    const dateFrom = parsed.data.from ? new Date(parsed.data.from) : now;
+    const dateTo = parsed.data.to ? new Date(parsed.data.to) : defaultTo;
+
+    const tags = parsed.data.tags
+      ? parsed.data.tags
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : undefined;
+
+    const prefTags = parsed.data.prefTags
+      ? parsed.data.prefTags
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : undefined;
+
+    const events = await queryEvents({
+      dateFrom,
+      dateTo,
+      timeOfDay: parsed.data.timeOfDay,
+      radiusKm: parsed.data.radiusKm,
+      priceMax: parsed.data.priceMax,
+      isFree: parsed.data.isFree,
+      tags,
+      indoorOutdoor: parsed.data.indoorOutdoor,
+      q: parsed.data.q,
+      userLat: parsed.data.lat,
+      userLng: parsed.data.lng,
+      prefTags,
+    });
+
+    return NextResponse.json({
+      meta: {
+        from: dateFrom.toISOString(),
+        to: dateTo.toISOString(),
+        count: events.length,
+      },
+      events,
+    });
+  } catch (error) {
+    console.error("API Error:", error);
     return NextResponse.json(
-      { error: "Invalid query", issues: parsed.error.issues },
-      { status: 400 }
+      { 
+        error: "Database connection error",
+        meta: { from: new Date().toISOString(), to: new Date().toISOString(), count: 0 },
+        events: [] 
+      },
+      { status: 500 }
     );
   }
-
-  const now = new Date();
-  const defaultTo = new Date(now.getTime() + 72 * 60 * 60 * 1000);
-
-  const dateFrom = parsed.data.from ? new Date(parsed.data.from) : now;
-  const dateTo = parsed.data.to ? new Date(parsed.data.to) : defaultTo;
-
-  const tags = parsed.data.tags
-    ? parsed.data.tags
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean)
-    : undefined;
-
-  const prefTags = parsed.data.prefTags
-    ? parsed.data.prefTags
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean)
-    : undefined;
-
-  const events = await queryEvents({
-    dateFrom,
-    dateTo,
-    timeOfDay: parsed.data.timeOfDay,
-    radiusKm: parsed.data.radiusKm,
-    priceMax: parsed.data.priceMax,
-    isFree: parsed.data.isFree,
-    tags,
-    indoorOutdoor: parsed.data.indoorOutdoor,
-    q: parsed.data.q,
-    userLat: parsed.data.lat,
-    userLng: parsed.data.lng,
-    prefTags,
-  });
-
-  return NextResponse.json({
-    meta: {
-      from: dateFrom.toISOString(),
-      to: dateTo.toISOString(),
-      count: events.length,
-    },
-    events,
-  });
 }

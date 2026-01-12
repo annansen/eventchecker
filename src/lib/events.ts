@@ -47,13 +47,14 @@ export type EventListItem = {
 };
 
 export async function queryEvents(filters: EventFilters): Promise<EventListItem[]> {
-  const where: Prisma.EventWhereInput = {
-    status: "published",
-    startAt: {
-      gte: filters.dateFrom,
-      lte: filters.dateTo,
-    },
-  };
+  try {
+    const where: Prisma.EventWhereInput = {
+      status: "published",
+      startAt: {
+        gte: filters.dateFrom,
+        lte: filters.dateTo,
+      },
+    };
 
   if (filters.isFree === true) {
     where.isFree = true;
@@ -195,4 +196,8 @@ export async function queryEvents(filters: EventFilters): Promise<EventListItem[
     });
 
   return filtered;
+  } catch (error) {
+    console.error("Database connection error in queryEvents:", error);
+    return [];
+  }
 }
