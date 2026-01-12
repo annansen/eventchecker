@@ -5,9 +5,10 @@ const nextConfig: NextConfig = {
     root: __dirname,
   },
   experimental: {
-    ssr: true,
+    forceSwcTransforms: true,
   },
   trailingSlash: true,
+  output: undefined,
 };
 
 export default nextConfig;
