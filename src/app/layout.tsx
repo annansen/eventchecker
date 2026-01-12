@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
 import "./leaflet.css";
 import "maplibre-gl/dist/maplibre-gl.css";
@@ -40,22 +41,24 @@ export default function RootLayout({
         <ErrorBoundary>
           <OnboardingGuard>
             <GeolocationProvider>
-              <div className="mx-auto min-h-dvh w-full max-w-md px-4 pb-20 pt-4">
-                {children}
-              </div>
-              <nav className="fixed inset-x-0 bottom-0 border-t border-black/10 bg-white">
-                <div className="mx-auto flex w-full max-w-md items-center justify-around px-4 py-3 text-sm font-medium">
-                  <a className="text-black" href="/">
-                    Nära mig
-                  </a>
-                  <a className="text-black/70" href="/saved">
-                    Sparade
-                  </a>
-                  <a className="text-black/70" href="/tips">
-                    Tips
-                  </a>
+              <Suspense fallback={<div>Laddar...</div>}>
+                <div className="mx-auto min-h-dvh w-full max-w-md px-4 pb-20 pt-4">
+                  {children}
                 </div>
-              </nav>
+                <nav className="fixed inset-x-0 bottom-0 border-t border-black/10 bg-white">
+                  <div className="mx-auto flex w-full max-w-md items-center justify-around px-4 py-3 text-sm font-medium">
+                    <a className="text-black" href="/">
+                      Nära mig
+                    </a>
+                    <a className="text-black/70" href="/saved">
+                      Sparade
+                    </a>
+                    <a className="text-black/70" href="/tips">
+                      Tips
+                    </a>
+                  </div>
+                </nav>
+              </Suspense>
             </GeolocationProvider>
           </OnboardingGuard>
         </ErrorBoundary>
