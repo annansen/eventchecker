@@ -1,9 +1,7 @@
 import { PrismaClient, type EventStatus } from "@prisma/client";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import { faker } from "@faker-js/faker/locale/sv";
 
-const adapter = new PrismaBetterSqlite3({ url: "file:./prisma/dev.db" });
-const prisma = new PrismaClient({ adapter });
+const prisma = new PrismaClient();
 
 type VenueSeed = {
   name: string;
