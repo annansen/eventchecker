@@ -1,0 +1,37 @@
+name: Scrape Linköping Events
+
+on:
+  schedule:
+    # Run every Sunday at 2 AM UTC (3 AM CET)
+    - cron: '0 2 * * 0'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run scraper
+        run: npm run scrape
+        env:
+          DATABASE_URL: file:./prisma/dev.db
+
+      - name: Commit and push if changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add prisma/dev.db
+          git diff --staged --quiet || git commit -m "Auto-update: scraped events from Visit Linköping"
+          git push

@@ -1,36 +1,101 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Saker att Göra i Linköping
 
-## Getting Started
+En mobil-first webbapp för att hitta evenemang och aktiviteter i Linköping med AI-assisterad sökning och geolokalisering.
 
-First, run the development server:
+## 🚀 Funktioner
+
+- **Onboarding** – välj plats och preferenser första gången
+- **Live geolocation** – se avstånd till events, auto-uppdatering
+- **Server-side filtrering** – snabba filter för datum, pris, kategori
+- **Detaljsida** – karta, spara, dela, externa länkar
+- **Sparade events** – localStorage-baserad lista
+- **Automatisk scraping** – hämtar events från Visit Linköping varje vecka
+- **Pull-to-refresh** – uppdatera events med svep
+
+## 🛠 Tech Stack
+
+- **Frontend:** Next.js 14 (App Router), TypeScript, Tailwind CSS
+- **Backend:** Next.js API routes, Prisma, SQLite
+- **Karta:** MapLibre GL (OpenStreetMap)
+- **Scraping:** Cheerio, Node.js
+- **Deployment:** GitHub Actions (automatisk scraping)
+
+## 📦 Installation
 
 ```bash
+# Install dependencies
+npm install
+
+# Seed database
+npm run seed
+
+# Start dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Öppna [http://localhost:3000](http://localhost:3000) för att se appen.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🔄 Scraping
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Appen hämtar automatiskt events från Visit Linköping:
 
-## Learn More
+### Manuell scraping
+```bash
+npm run scrape
+```
 
-To learn more about Next.js, take a look at the following resources:
+### Automatisk (GitHub Actions)
+- Körs varje söndag kl 3:00 (CET)
+- Committar nya events till databasen
+- Kan köras manuellt från GitHub Actions-fliken
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Lägg till nya datakällor
+1. Uppdatera `scripts/scrape-linkoping.ts`
+2. Lägg till ny URL och CSS-selektorer
+3. Testa med `npm run scrape`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🗄 Database
 
-## Deploy on Vercel
+```bash
+# Prisma studio (visualisera data)
+npx prisma studio
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Generera klient
+npx prisma generate
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Migrera
+npx prisma migrate dev
+```
+
+## 🚀 Deployment
+
+### Vercel (rekommenderat)
+1. Pusha till GitHub
+2. Länka till Vercel
+3. Sätt miljövariabler:
+   - `DATABASE_URL` (SQLite fungerar utan)
+   - `ADMIN_TOKEN` (om du vill ha admin)
+
+### GitHub Actions för scraping
+```bash
+# Pusha för att aktivera
+git push origin main
+```
+
+## 📱 Användning
+
+1. **Första besök** – gå igenom onboarding
+2. **Sök/filter** – använd quick filters eller sökfält
+3. **Detaljer** – klicka på event för karta och info
+4. **Spara** – spara intressanta events
+5. **Uppdatera** – dra neråt för att refresha
+
+## 🤝 Bidra
+
+1. Hitta nya datakällor (bibliotek, museer, idrottsföreningar)
+2. Uppdatera scraper med nya selektorer
+3. Testa och pusha
+
+## 📄 Licens
+
+MIT

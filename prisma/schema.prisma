@@ -1,0 +1,81 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Venue {
+  id      String @id @default(uuid())
+  name    String
+  address String
+  city    String
+  lat     Float
+  lng     Float
+
+  events Event[]
+}
+
+model Event {
+  id          String @id @default(uuid())
+  title       String
+  description String?
+  startAt     DateTime
+  endAt       DateTime?
+
+  venueId String
+  venue   Venue @relation(fields: [venueId], references: [id])
+
+  lat Float
+  lng Float
+
+  priceMin Int?
+  priceMax Int?
+  isFree   Boolean @default(false)
+
+  ageMin Int?
+  ageMax Int?
+
+  tags Json
+
+  externalUrl String?
+  imageUrl    String?
+
+  status    EventStatus @default(draft)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model Tip {
+  id String @id @default(uuid())
+
+  title       String
+  text        String?
+  externalUrl String
+
+  suggestedCity    String
+  suggestedStartAt DateTime?
+
+  status    TipStatus @default(pending)
+  createdAt DateTime  @default(now())
+}
+
+enum EventStatus {
+  draft
+  published
+  cancelled
+}
+
+enum TipStatus {
+  pending
+  approved
+  rejected
+}

@@ -1,0 +1,107 @@
+/* Fix Leaflet rendering issues */
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.leaflet-container .leaflet-pane {
+  z-index: 1;
+}
+
+.leaflet-container .leaflet-tile-pane {
+  z-index: 2;
+}
+
+.leaflet-container .leaflet-overlay-pane {
+  z-index: 4;
+}
+
+.leaflet-container .leaflet-marker-pane {
+  z-index: 5;
+}
+
+.leaflet-container .leaflet-popup-pane {
+  z-index: 6;
+}
+
+.leaflet-container .leaflet-tooltip-pane {
+  z-index: 7;
+}
+
+/* Fix marker icon rendering */
+.custom-div-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
+.custom-div-icon img {
+  display: none;
+}
+
+/* Fix map container and zoom issues */
+.leaflet-fade-anim .leaflet-tile {
+  opacity: 0;
+}
+
+.leaflet-fade-anim .leaflet-tile-loaded {
+  opacity: 1;
+}
+
+.leaflet-zoom-box {
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.4);
+  border: 2px solid rgba(0,0,0,0.2);
+  background-color: #fff;
+}
+
+.leaflet-control-attribution {
+  background: rgba(255,255,255,0.8);
+  margin: 0 !important;
+}
+
+/* Fix zoom clipping */
+.leaflet-container .leaflet-control-zoom {
+  margin: 10px !important;
+}
+
+.leaflet-container .leaflet-control-zoom a {
+  background-color: white !important;
+  border: 2px solid rgba(0,0,0,0.2) !important;
+  width: 30px !important;
+  height: 30px !important;
+  line-height: 26px !important;
+}
+
+.leaflet-container .leaflet-control-zoom a:hover {
+  background-color: #f4f4f4 !important;
+}
+
+/* Fix marker positioning during zoom */
+.leaflet-marker-pane {
+  transform: translate3d(0, 0, 0);
+}
+
+.leaflet-marker-icon {
+  transform: translate3d(0, 0, 0);
+}
+
+/* Fix tile rendering during zoom */
+.leaflet-tile {
+  transform: translate3d(0, 0, 0);
+}
+
+.leaflet-tile-container {
+  transform: translate3d(0, 0, 0);
+}
+
+/* Fix overflow issues */
+.leaflet-map-pane {
+  transform: translate3d(0, 0, 0);
+  width: 100%;
+  height: 100%;
+}
+
+.leaflet-pane {
+  transform: translate3d(0, 0, 0);
+}
